@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+.env
+
+# production
+build/
+dist/
+
+# misc
+.DS_Store
+*.log
+
+# editor folders
+.vscode/
+.idea/
+
+# tailwind and cache
+*.css
+.cache/
