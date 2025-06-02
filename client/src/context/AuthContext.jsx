@@ -72,12 +72,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };
 
+  // Add this function to your AuthContext
+  const updateUserInStorage = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  // Then in your provider value:
   const value = {
     user,
     login,
     register,
     logout,
-    updateUser,
+    updateUser: updateUserInStorage, // Renamed for clarity
     isAuthenticated: !!user,
   };
 

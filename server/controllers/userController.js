@@ -37,6 +37,11 @@ const toggleRole = async (req, res) => {
   try {
     const { isDriver } = req.body;
 
+    // Validate input
+    if (typeof isDriver !== "boolean") {
+      return res.status(400).json({ message: "Invalid role value" });
+    }
+
     await User.update({ isDriver }, { where: { id: req.user.id } });
 
     const updatedUser = await User.findByPk(req.user.id, {

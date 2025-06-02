@@ -43,10 +43,11 @@ const Layout = ({ children }) => {
             <div className="flex items-center">
               <div className="text-xl font-bold text-primary-600">Carpool</div>
               <div className="hidden md:ml-10 md:flex md:space-x-8">
-                {navigation.map((item) =>
-                  !item.driverOnly || (item.driverOnly && user?.isDriver) ? (
+                {navigation.map((item) => {
+                  if (item.driverOnly && !user?.isDriver) return null;
+                  return (
                     <Link
-                      key={item.name}
+                      key={item.href}
                       to={item.href}
                       className={`${
                         item.current
@@ -56,8 +57,8 @@ const Layout = ({ children }) => {
                     >
                       {item.name}
                     </Link>
-                  ) : null
-                )}
+                  );
+                })}
               </div>
             </div>
 
