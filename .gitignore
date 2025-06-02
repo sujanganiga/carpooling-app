@@ -17,3 +17,7 @@ dist/
 # tailwind and cache
 *.css
 .cache/
+
+
+server/package-lock.json
+client/package-lock.json
