@@ -1,3 +1,4 @@
+/*
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
@@ -147,6 +148,183 @@ const Profile = () => {
           </div>
           <button
             className="btn-secondary"
+            onClick={async () => {
+              try {
+                const response = await api.put("/user/role", {
+                  isDriver: !user?.isDriver,
+                });
+                updateUser(response.data.user);
+              } catch (err) {
+                console.error("Error toggling role:", err);
+              }
+            }}
+          >
+            {user?.isDriver ? t("switchToRiderMode") : t("switchToDriverMode")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
+*/
+
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import api from "../utils/api";
+
+const Profile = () => {
+  const { t } = useTranslation();
+  const { user, updateUser } = useAuth();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      const response = await api.put("/user/profile", formData);
+      updateUser(response.data.user);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || t("updateFailed"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 tracking-tight">
+        {t("profile")}
+      </h1>
+
+      {success && (
+        <div className="bg-emerald-50 text-emerald-700 p-3 rounded-lg mb-4 border border-emerald-200 animate-fade-in">
+          {t("profileUpdatedSuccessfully")}
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 border border-red-200 animate-fade-in">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("name")}
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("email")}
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm bg-gray-50"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("phone")}
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 disabled:bg-gray-300 disabled:text-gray-600 text-sm"
+          >
+            {loading ? t("saving") + "..." : t("saveChanges")}
+          </button>
+        </div>
+      </form>
+
+      <div className="mt-6 pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span
+              className={`h-2 w-2 rounded-full ${
+                user?.isDriver ? "bg-emerald-500" : "bg-blue-500"
+              }`}
+            ></span>
+            <div>
+              <p className="text-gray-700 text-sm">
+                {user?.isDriver
+                  ? t("driverModeEnabled")
+                  : t("riderModeEnabled")}
+              </p>
+              <p className="text-xs text-gray-500">
+                {t("switchModeDescription")}
+              </p>
+            </div>
+          </div>
+          <button
+            className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 text-sm"
             onClick={async () => {
               try {
                 const response = await api.put("/user/role", {

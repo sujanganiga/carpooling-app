@@ -23,14 +23,19 @@ const OfferRide = () => {
   // If user is not in driver mode, show message
   if (!user?.isDriver) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">
           {t("offerRide")}
         </h1>
         <div className="text-center py-8">
-          <p className="text-red-500 mb-4">{t("driverModeRequired")}</p>
-          <p className="mb-4">{t("switchToDriverModeMessage")}</p>
-          <Link to="/profile" className="btn-primary">
+          <p className="text-red-500 font-semibold mb-4">
+            {t("driverModeRequired")}
+          </p>
+          <p className="text-gray-600 mb-4">{t("switchToDriverModeMessage")}</p>
+          <Link
+            to="/profile"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
+          >
             {t("goToProfile")}
           </Link>
         </div>
@@ -69,19 +74,19 @@ const OfferRide = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+    <div className="bg-white rounded-xl shadow-lg p-8">
+      <h1 className="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">
         {t("offerRide")}
       </h1>
 
       {success && (
-        <div className="bg-green-50 text-green-700 p-3 rounded-md mb-6">
+        <div className="bg-teal-50 text-teal-700 p-4 rounded-lg mb-6 border border-teal-200 animate-fade-in">
           {t("rideOfferedSuccessfully")}
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 text-red-500 p-3 rounded-md mb-6">
+        <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6 border border-red-200 animate-fade-in">
           {error}
         </div>
       )}
@@ -89,7 +94,7 @@ const OfferRide = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("pickupLocation")}
             </label>
             <input
@@ -97,13 +102,13 @@ const OfferRide = () => {
               value={formData.pickupLocation}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
               placeholder={t("enterPickupLocation")}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("dropoffLocation")}
             </label>
             <input
@@ -111,13 +116,13 @@ const OfferRide = () => {
               value={formData.dropoffLocation}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
               placeholder={t("enterDropoffLocation")}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("departureTime")}
             </label>
             <input
@@ -126,12 +131,12 @@ const OfferRide = () => {
               value={formData.departureTime}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("arrivalTime")}
             </label>
             <input
@@ -140,12 +145,12 @@ const OfferRide = () => {
               value={formData.arrivalTime}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("pricePerSeat")}
             </label>
             <input
@@ -154,13 +159,13 @@ const OfferRide = () => {
               value={formData.price}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
               placeholder={t("enterPricePerSeat")}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t("totalSeats")}
             </label>
             <input
@@ -169,14 +174,18 @@ const OfferRide = () => {
               value={formData.seatsAvailable}
               onChange={handleChange}
               required
-              className="input-field"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
               placeholder={t("enterTotalSeats")}
             />
           </div>
         </div>
 
         <div className="flex justify-end">
-          <button type="submit" disabled={loading} className="btn-primary">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 disabled:bg-gray-400"
+          >
             {loading ? t("offeringRide") + "..." : t("offerRideBtn")}
           </button>
         </div>

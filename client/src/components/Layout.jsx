@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
@@ -36,7 +36,6 @@ const Layout = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -92,13 +91,128 @@ const Layout = ({ children }) => {
         </div>
       </nav>
 
-      {/* Main Content */}
+     
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
 
-      {/* Footer */}
+     
       <footer className="bg-white">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm text-gray-500">
+            © {new Date().getFullYear()} Carpool App. {t("allRightsReserved")}.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Layout;
+*/
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import LanguageSwitcher from "./LanguageSwitcher";
+
+const Layout = ({ children }) => {
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const location = useLocation();
+
+  const navigation = [
+    { name: t("dashboard"), href: "/", current: location.pathname === "/" },
+    {
+      name: t("findRide"),
+      href: "/find-ride",
+      current: location.pathname === "/find-ride",
+    },
+    {
+      name: t("offerRide"),
+      href: "/offer-ride",
+      current: location.pathname === "/offer-ride",
+      driverOnly: true,
+    },
+    {
+      name: t("myRides"),
+      href: "/my-rides",
+      current: location.pathname === "/my-rides",
+    },
+    {
+      name: t("profile"),
+      href: "/profile",
+      current: location.pathname === "/profile",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 font-sans">
+      {/* Navigation */}
+      <nav className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="text-2xl font-extrabold text-indigo-600 tracking-tight">
+                Carpool
+              </div>
+              <div className="hidden md:ml-10 md:flex md:space-x-8">
+                {navigation.map((item) =>
+                  !item.driverOnly || (item.driverOnly && user?.isDriver) ? (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`${
+                        item.current
+                          ? "border-indigo-500 text-indigo-700"
+                          : "border-transparent text-gray-600 hover:text-indigo-600 hover:border-indigo-300"
+                      } inline-flex items-center px-3 py-2 border-b-4 text-sm font-semibold transition-all duration-200 ease-in-out`}
+                    >
+                      {item.name}
+                    </Link>
+                  ) : null
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
+              {user ? (
+                <button
+                  onClick={logout}
+                  className="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                >
+                  {t("logout")}
+                </button>
+              ) : (
+                <div className="flex space-x-4">
+                  <Link
+                    to="/login"
+                    className="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                  >
+                    {t("login")}
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="text-sm font-semibold text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md transition-all duration-200"
+                  >
+                    {t("register")}
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="flex-grow">
+        <div className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">{children}</div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white shadow-inner">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500">
             © {new Date().getFullYear()} Carpool App. {t("allRightsReserved")}.
