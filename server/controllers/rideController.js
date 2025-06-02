@@ -4,8 +4,16 @@ const Booking = require("../models/Booking");
 const User = require("../models/User");
 
 // Create a new ride
+// Create a new ride
 const createRide = async (req, res) => {
   try {
+    // Check if user is a driver
+    if (!req.user.isDriver) {
+      return res.status(403).json({
+        message: "You must be in driver mode to offer rides",
+      });
+    }
+
     const {
       pickupLocation,
       dropoffLocation,

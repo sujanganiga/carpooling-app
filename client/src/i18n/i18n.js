@@ -62,8 +62,15 @@ const resources = {
       loading: "Loading...",
       error: "Error",
       success: "Success",
+
+      // New Keys
+      driverModeRequired: "Driver Mode Required",
+      switchToDriverModeMessage:
+        "You need to switch to driver mode to offer rides",
+      goToProfile: "Go to Profile",
+      driverModeEnabled: "You are in driver mode",
+      riderModeEnabled: "You are in rider mode",
     },
-    // Add to each language:
     pagination: {
       page: "Page",
       of: "of",
@@ -105,13 +112,20 @@ const resources = {
       loading: "Cargando...",
       error: "Error",
       success: "Éxito",
+
+      // New Keys
+      driverModeRequired: "Se requiere modo conductor",
+      switchToDriverModeMessage:
+        "Debes cambiar al modo conductor para ofrecer viajes",
+      goToProfile: "Ir al Perfil",
+      driverModeEnabled: "Estás en modo conductor",
+      riderModeEnabled: "Estás en modo pasajero",
     },
-    // Add to each language:
     pagination: {
-      page: "Page",
-      of: "of",
-      previous: "Previous",
-      next: "Next",
+      page: "Página",
+      of: "de",
+      previous: "Anterior",
+      next: "Siguiente",
     },
   },
   hi: {
@@ -147,14 +161,21 @@ const resources = {
       cancel: "रद्द करें",
       loading: "लोड हो रहा है...",
       error: "त्रुटि",
-      success: "सफल",
+      success: "सफलता",
+
+      // New Keys
+      driverModeRequired: "ड्राइवर मोड आवश्यक है",
+      switchToDriverModeMessage:
+        "राइड ऑफर करने के लिए आपको ड्राइवर मोड में स्विच करना होगा",
+      goToProfile: "प्रोफ़ाइल पर जाएं",
+      driverModeEnabled: "आप ड्राइवर मोड में हैं",
+      riderModeEnabled: "आप राइडर मोड में हैं",
     },
-    // Add to each language:
     pagination: {
-      page: "Page",
-      of: "of",
-      previous: "Previous",
-      next: "Next",
+      page: "पृष्ठ",
+      of: "में से",
+      previous: "पिछला",
+      next: "अगला",
     },
   },
 };

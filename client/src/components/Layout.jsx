@@ -20,6 +20,7 @@ const Layout = ({ children }) => {
       name: t("offerRide"),
       href: "/offer-ride",
       current: location.pathname === "/offer-ride",
+      driverOnly: true,
     },
     {
       name: t("myRides"),
@@ -42,19 +43,21 @@ const Layout = ({ children }) => {
             <div className="flex items-center">
               <div className="text-xl font-bold text-primary-600">Carpool</div>
               <div className="hidden md:ml-10 md:flex md:space-x-8">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`${
-                      item.current
-                        ? "border-primary-500 text-gray-900"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+                {navigation.map((item) =>
+                  !item.driverOnly || (item.driverOnly && user?.isDriver) ? (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`${
+                        item.current
+                          ? "border-primary-500 text-gray-900"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                    >
+                      {item.name}
+                    </Link>
+                  ) : null
+                )}
               </div>
             </div>
 

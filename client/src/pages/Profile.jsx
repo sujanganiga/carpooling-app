@@ -127,17 +127,23 @@ const Profile = () => {
       </form>
 
       <div className="mt-8 pt-6 border-t border-gray-200">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">
-          {t("accountSettings")}
-        </h2>
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-700">
-              {user?.isDriver ? t("driverModeEnabled") : t("riderModeEnabled")}
-            </p>
-            <p className="text-sm text-gray-500">
-              {t("switchModeDescription")}
-            </p>
+          <div className="flex items-center gap-2">
+            <span
+              className={`h-3 w-3 rounded-full ${
+                user?.isDriver ? "bg-green-500" : "bg-blue-500"
+              }`}
+            ></span>
+            <div>
+              <p className="text-gray-700">
+                {user?.isDriver
+                  ? t("driverModeEnabled")
+                  : t("riderModeEnabled")}
+              </p>
+              <p className="text-sm text-gray-500">
+                {t("switchModeDescription")}
+              </p>
+            </div>
           </div>
           <button
             className="btn-secondary"

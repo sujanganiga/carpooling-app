@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 
 const OfferRide = () => {
+  const { user } = useAuth();
   const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     pickupLocation: "",
     dropoffLocation: "",
@@ -15,6 +19,24 @@ const OfferRide = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // If user is not in driver mode, show message
+  if (!user?.isDriver) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          {t("offerRide")}
+        </h1>
+        <div className="text-center py-8">
+          <p className="text-red-500 mb-4">{t("driverModeRequired")}</p>
+          <p className="mb-4">{t("switchToDriverModeMessage")}</p>
+          <Link to="/profile" className="btn-primary">
+            {t("goToProfile")}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
