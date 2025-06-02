@@ -21,3 +21,6 @@ dist/
 
 server/package-lock.json
 client/package-lock.json
+
+
+client/package-lock.json

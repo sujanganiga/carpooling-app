@@ -6,6 +6,8 @@ import { LanguageProvider } from "./context/LanguageContext";
 import i18n from "./i18n/i18n";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary"; // Added import
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -19,59 +21,61 @@ function App() {
     <I18nextProvider i18n={i18n}>
       <AuthProvider>
         <LanguageProvider>
-          <Router>
-            <Layout>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+          <ErrorBoundary>
+            <Router>
+              <Layout>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route
-                  path="/find-ride"
-                  element={
-                    <ProtectedRoute>
-                      <FindRide />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/find-ride"
+                    element={
+                      <ProtectedRoute>
+                        <FindRide />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route
-                  path="/offer-ride"
-                  element={
-                    <ProtectedRoute>
-                      <OfferRide />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/offer-ride"
+                    element={
+                      <ProtectedRoute>
+                        <OfferRide />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route
-                  path="/my-rides"
-                  element={
-                    <ProtectedRoute>
-                      <MyRides />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </Layout>
-          </Router>
+                  <Route
+                    path="/my-rides"
+                    element={
+                      <ProtectedRoute>
+                        <MyRides />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </Layout>
+            </Router>
+          </ErrorBoundary>
         </LanguageProvider>
       </AuthProvider>
     </I18nextProvider>
