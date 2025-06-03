@@ -3,8 +3,8 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Ensure upload directory exists
-const uploadDir = "public/uploads/profile";
+// Create upload directory if it doesn't exist
+const uploadDir = path.join(__dirname, "../public/uploads/profile");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -29,12 +29,10 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
+module.exports = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: 2 * 1024 * 1024, // 2MB limit
   },
 });
-
-module.exports = upload;

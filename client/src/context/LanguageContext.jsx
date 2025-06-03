@@ -23,7 +23,7 @@ export const LanguageProvider = ({ children }) => {
 
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
-    { code: "es", name: "Español", flag: "🇪🇸" },
+    { code: "kn", name: "ಕನ್ನಡ", flag: "kn" },
     { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
   ];
 

@@ -36,6 +36,10 @@ const Profile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError(t("fileTooLarge") || "File size should be less than 2MB.");
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
@@ -54,6 +58,13 @@ const Profile = () => {
     setError("");
     setSuccess(false);
 
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      setError(t("invalidPhoneNumber") || "Invalid phone number.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
@@ -71,7 +82,11 @@ const Profile = () => {
       updateUser(response.data.user);
 
       if (response.data.user.profilePhoto) {
-        setPreview(`http://localhost:5000${response.data.user.profilePhoto}`);
+        setPreview(
+          `http://localhost:5000${
+            response.data.user.profilePhoto
+          }?${Date.now()}`
+        );
       }
       fileInputRef.current.value = "";
 
@@ -79,7 +94,11 @@ const Profile = () => {
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error("Profile update error:", err);
-      setError(err.response?.data?.message || t("updateFailed"));
+      setError(
+        err.response?.data?.message ||
+          t("updateFailed") ||
+          "Profile update failed."
+      );
     } finally {
       setLoading(false);
     }
@@ -109,13 +128,13 @@ const Profile = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Profile Photo Upload */}
           <div className="flex flex-col items-center">
             <div className="relative">
               <img
                 className="h-32 w-32 object-cover rounded-full border-4 border-white shadow-lg"
                 src={preview}
                 alt="Profile"
+                onError={() => setPreview("/default-profile.png")}
               />
               <button
                 type="button"
@@ -140,7 +159,6 @@ const Profile = () => {
             </p>
           </div>
 
-          {/* Form Fields */}
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="group">
@@ -148,6 +166,7 @@ const Profile = () => {
                   {t("name")}
                 </label>
                 <input
+                  aria-label={t("name")}
                   id="name"
                   name="name"
                   type="text"
@@ -163,6 +182,7 @@ const Profile = () => {
                   {t("phone")}
                 </label>
                 <input
+                  aria-label={t("phone")}
                   id="phone"
                   name="phone"
                   type="tel"
@@ -177,9 +197,34 @@ const Profile = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50"
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? t("saving") + "..." : t("saveChanges")}
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
+                    {t("saving")}...
+                  </span>
+                ) : (
+                  t("saveChanges")
+                )}
               </button>
             </div>
           </div>
