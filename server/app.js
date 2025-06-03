@@ -35,6 +35,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
     credentials: true,
+    exposedHeaders: ["Content-Disposition"], // Keep this one
   })
 );
 app.use(morgan("combined"));
@@ -51,13 +52,6 @@ app.use("/api/rides", rideRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
 // server/app.js
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true,
-    exposedHeaders: ["Content-Disposition"],
-  })
-);
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({
