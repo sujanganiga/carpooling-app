@@ -44,8 +44,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/rides", rideRoutes);
+app.use("/user", userRoutes);
+app.use("/rides", rideRoutes);
 // server/app.js
 // Add this before your routes
 // server/app.js
