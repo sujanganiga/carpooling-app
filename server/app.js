@@ -3,7 +3,10 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 require("dotenv").config();
+// server/app.js
+const path = require("path");
 
+// Add this near other middleware
 // Import models
 const User = require("./models/User");
 const Ride = require("./models/Ride");
@@ -42,7 +45,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/rides", rideRoutes);
+// server/app.js
+// Add this before your routes
+// server/app.js
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
+// server/app.js
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+    exposedHeaders: ["Content-Disposition"],
+  })
+);
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({

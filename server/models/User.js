@@ -30,6 +30,11 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    profilePhoto: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "/default-profile.png",
+    },
   },
   {
     tableName: "users",

@@ -1,34 +1,51 @@
-/*
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
+import { FaCamera, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const Profile = () => {
   const { t } = useTranslation();
   const { user, updateUser } = useAuth();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
+  const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || "",
-        email: user.email || "",
         phone: user.phone || "",
       });
+      setPreview(
+        user.profilePhoto
+          ? `http://localhost:5000${user.profilePhoto}`
+          : "/default-profile.png"
+      );
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const handleSubmit = async (e) => {
@@ -38,182 +55,30 @@ const Profile = () => {
     setSuccess(false);
 
     try {
-      const response = await api.put("/user/profile", formData);
-      updateUser(response.data.user);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
-      setError(err.response?.data?.message || t("updateFailed"));
-    } finally {
-      setLoading(false);
-    }
-  };
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("phone", formData.phone);
 
-  return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("profile")}</h1>
+      const selectedFile = fileInputRef.current?.files?.[0];
+      if (selectedFile) {
+        formDataToSend.append("profilePhoto", selectedFile);
+      }
 
-      {success && (
-        <div className="bg-green-50 text-green-700 p-3 rounded-md mb-4">
-          {t("profileUpdatedSuccessfully")}
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-50 text-red-500 p-3 rounded-md mb-4">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("name")}
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className="input-field"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("email")}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="input-field"
-            disabled
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("phone")}
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            className="input-field"
-          />
-        </div>
-
-        <div className="flex justify-end">
-          <button type="submit" disabled={loading} className="btn-primary">
-            {loading ? t("saving") + "..." : t("saveChanges")}
-          </button>
-        </div>
-      </form>
-
-      <div className="mt-8 pt-6 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span
-              className={`h-3 w-3 rounded-full ${
-                user?.isDriver ? "bg-green-500" : "bg-blue-500"
-              }`}
-            ></span>
-            <div>
-              <p className="text-gray-700">
-                {user?.isDriver
-                  ? t("driverModeEnabled")
-                  : t("riderModeEnabled")}
-              </p>
-              <p className="text-sm text-gray-500">
-                {t("switchModeDescription")}
-              </p>
-            </div>
-          </div>
-          <button
-            className="btn-secondary"
-            onClick={async () => {
-              try {
-                const response = await api.put("/user/role", {
-                  isDriver: !user?.isDriver,
-                });
-                updateUser(response.data.user);
-              } catch (err) {
-                console.error("Error toggling role:", err);
-              }
-            }}
-          >
-            {user?.isDriver ? t("switchToRiderMode") : t("switchToDriverMode")}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Profile;
-*/
-
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../context/AuthContext";
-import api from "../utils/api";
-
-const Profile = () => {
-  const { t } = useTranslation();
-  const { user, updateUser } = useAuth();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
+      const response = await api.put("/user/profile", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-    }
-  }, [user]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess(false);
-
-    try {
-      const response = await api.put("/user/profile", formData);
       updateUser(response.data.user);
+
+      if (response.data.user.profilePhoto) {
+        setPreview(`http://localhost:5000${response.data.user.profilePhoto}`);
+      }
+      fileInputRef.current.value = "";
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
+      console.error("Profile update error:", err);
       setError(err.response?.data?.message || t("updateFailed"));
     } finally {
       setLoading(false);
@@ -221,124 +86,104 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6 tracking-tight">
-        {t("profile")}
-      </h1>
+    <div className="min-h-screen bg-gradient-to-tr from-purple-50 via-white to-teal-50 py-10 px-6 lg:px-20">
+      <div className="max-w-4xl mx-auto bg-white/60 backdrop-blur-md border border-gray-200 rounded-3xl shadow-2xl p-10 animate-slide-in-up">
+        <h1 className="text-3xl font-extrabold text-center text-teal-700 mb-8">
+          {t("profile")}
+        </h1>
 
-      {success && (
-        <div className="bg-emerald-50 text-emerald-700 p-3 rounded-lg mb-4 border border-emerald-200 animate-fade-in">
-          {t("profileUpdatedSuccessfully")}
-        </div>
-      )}
+        {success && (
+          <div className="flex items-center justify-center mb-6">
+            <FaCheckCircle className="text-green-500 text-2xl mr-2 animate-pulse" />
+            <span className="text-green-700 font-medium">
+              {t("profileUpdatedSuccessfully")}
+            </span>
+          </div>
+        )}
 
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 border border-red-200 animate-fade-in">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="flex items-center justify-center mb-6">
+            <FaTimesCircle className="text-red-500 text-2xl mr-2" />
+            <span className="text-red-600 font-medium">{error}</span>
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("name")}
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Profile Photo Upload */}
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <img
+                className="h-32 w-32 object-cover rounded-full border-4 border-white shadow-lg"
+                src={preview}
+                alt="Profile"
+              />
+              <button
+                type="button"
+                onClick={triggerFileInput}
+                className="absolute bottom-0 right-0 bg-white rounded-full p-2 border border-gray-300 hover:bg-gray-100 shadow-md transition-transform transform hover:scale-110"
+                title={t("changePhoto")}
+              >
+                <FaCamera className="text-gray-600" />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+            <p className="mt-4 text-sm text-gray-600 text-center">
+              {t("profilePhotoInstructions")}
+              <br />
+              {t("maxFileSize")}: 2 MB
+            </p>
+          </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("email")}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm bg-gray-50"
-            disabled
-          />
-        </div>
+          {/* Form Fields */}
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="group">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-teal-600 transition-colors">
+                  {t("name")}
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
 
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("phone")}
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-          />
-        </div>
+              <div className="group">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-teal-600 transition-colors">
+                  {t("phone")}
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 disabled:bg-gray-300 disabled:text-gray-600 text-sm"
-          >
-            {loading ? t("saving") + "..." : t("saveChanges")}
-          </button>
-        </div>
-      </form>
-
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span
-              className={`h-2 w-2 rounded-full ${
-                user?.isDriver ? "bg-emerald-500" : "bg-blue-500"
-              }`}
-            ></span>
-            <div>
-              <p className="text-gray-700 text-sm">
-                {user?.isDriver
-                  ? t("driverModeEnabled")
-                  : t("riderModeEnabled")}
-              </p>
-              <p className="text-xs text-gray-500">
-                {t("switchModeDescription")}
-              </p>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50"
+              >
+                {loading ? t("saving") + "..." : t("saveChanges")}
+              </button>
             </div>
           </div>
-          <button
-            className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 text-sm"
-            onClick={async () => {
-              try {
-                const response = await api.put("/user/role", {
-                  isDriver: !user?.isDriver,
-                });
-                updateUser(response.data.user);
-              } catch (err) {
-                console.error("Error toggling role:", err);
-              }
-            }}
-          >
-            {user?.isDriver ? t("switchToRiderMode") : t("switchToDriverMode")}
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   );
