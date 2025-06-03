@@ -33,7 +33,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: process.env.CLIENT_URL || "http://localhost:3001",
     credentials: true,
     exposedHeaders: ["Content-Disposition"], // Keep this one
   })
@@ -43,7 +43,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/rides", rideRoutes);
 // server/app.js

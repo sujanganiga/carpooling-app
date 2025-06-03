@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css"; // Tailwind CSS and custom styles
+import "./index.css";
 
-// Error Boundary Component
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -101,6 +100,7 @@ const initializeApp = () => {
   }
 };
 
+// CORRECTED: Added '/api' to the base URL
 const appConfig = {
   apiBaseUrl: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
   environment: process.env.NODE_ENV || "development",
