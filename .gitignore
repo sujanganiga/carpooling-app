@@ -12,11 +12,7 @@ dist/
 
 # editor folders
 .vscode/
-.idea/
-
-# tailwind and cache
-*.css
-.cache/
+.idea/ 
 
 
 server/package-lock.json
