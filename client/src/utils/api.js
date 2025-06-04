@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Add trailing slash to ensure consistent URL concatenation
-const API_BASE_URL = "https://carpooling-app-2.onrender.com";
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,

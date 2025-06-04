@@ -105,12 +105,19 @@ const Dashboard = () => {
                 {t("findRide")}
               </button>
 
-              {user?.isDriver && (
+              {user?.isDriver ? (
                 <button
                   onClick={() => navigate("/offer-ride")}
                   className="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition transform hover:scale-105"
                 >
                   {t("offerRide")}
+                </button>
+              ) : (
+                <button
+                  onClick={toggleRole}
+                  className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-400 focus:outline-none transition transform hover:scale-105"
+                >
+                  {t("becomeDriver")}
                 </button>
               )}
             </div>

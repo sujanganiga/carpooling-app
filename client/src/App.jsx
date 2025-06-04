@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import FindRide from "./pages/FindRide";
 import OfferRide from "./pages/OfferRide";
 import MyRides from "./pages/MyRides";
+import Home from "./pages/Home";
 
 // New DriverRoute component
 const DriverRoute = ({ children }) => {
@@ -48,11 +49,14 @@ function App() {
             <Router>
               <Layout>
                 <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
 
+                  {/* Protected routes */}
                   <Route
-                    path="/"
+                    path="/dashboard"
                     element={
                       <ProtectedRoute>
                         <Dashboard />
