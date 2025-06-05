@@ -195,12 +195,120 @@ const Layout = ({ children }) => {
 
       {/* Footer */}
       {!isHomePage && (
-        <footer className="bg-white border-t shadow-inner">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-center text-sm text-gray-500">
-              © {new Date().getFullYear()} Carpool App. {t("allRightsReserved")}
-              .
-            </p>
+        <footer className="bg-white border-t shadow-inner mt-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm text-gray-600">
+              {/* Brand Info */}
+              <div>
+                <h3 className="text-indigo-600 font-bold text-lg mb-2">
+                  Carpool
+                </h3>
+                <p>
+                  {t("footer.description") ||
+                    "Connecting people. Saving the planet."}
+                </p>
+              </div>
+
+              {/* Quick Links */}
+              <div>
+                <h4 className="font-semibold mb-2">
+                  {t("quickLinks") || "Quick Links"}
+                </h4>
+                <ul className="space-y-1">
+                  <li>
+                    <Link to="/dashboard" className="hover:text-indigo-600">
+                      {t("dashboard")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/find-ride" className="hover:text-indigo-600">
+                      {t("findRide")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/offer-ride" className="hover:text-indigo-600">
+                      {t("offerRide")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/profile" className="hover:text-indigo-600">
+                      {t("profile")}
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Support */}
+              <div>
+                <h4 className="font-semibold mb-2">
+                  {t("support") || "Support"}
+                </h4>
+                <ul className="space-y-1">
+                  <li>
+                    <Link to="/help" className="hover:text-indigo-600">
+                      {t("helpCenter") || "Help Center"}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" className="hover:text-indigo-600">
+                      {t("contactUs") || "Contact Us"}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/faq" className="hover:text-indigo-600">
+                      {t("faq") || "FAQ"}
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Socials */}
+              <div>
+                <h4 className="font-semibold mb-2">
+                  {t("followUs") || "Follow Us"}
+                </h4>
+                <div className="flex space-x-4 text-xl">
+                  <a
+                    href="https://facebook.com"
+                    className="text-blue-600 hover:text-blue-800"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i className="fab fa-facebook"></i>
+                  </a>
+                  <a
+                    href="https://twitter.com"
+                    className="text-blue-400 hover:text-blue-600"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i className="fab fa-twitter"></i>
+                  </a>
+                  <a
+                    href="https://instagram.com"
+                    className="text-pink-500 hover:text-pink-700"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i className="fab fa-instagram"></i>
+                  </a>
+                  <a
+                    href="https://linkedin.com"
+                    className="text-blue-700 hover:text-blue-900"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i className="fab fa-linkedin"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom line */}
+            <div className="mt-8 border-t pt-4 text-center text-gray-500 text-xs">
+              © {new Date().getFullYear()} Carpool App.{" "}
+              {t("allRightsReserved") || "All rights reserved."}
+            </div>
           </div>
         </footer>
       )}

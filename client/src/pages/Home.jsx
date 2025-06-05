@@ -12,18 +12,18 @@ const Home = () => {
 
   const features = [
     {
-      title: t("home.findRide"),
-      description: t("home.findRideDesc"),
+      title: t("findRide"),
+      description: t("findRideDesc"),
       icon: "🔍",
     },
     {
-      title: t("home.offerRide"),
-      description: t("home.offerRideDesc"),
+      title: t("offerRide"),
+      description: t("offerRideDesc"),
       icon: "🚗",
     },
     {
-      title: t("home.saveMoney"),
-      description: t("home.saveMoneyDesc"),
+      title: t("saveMoney"),
+      description: t("saveMoneyDesc"),
       icon: "💰",
     },
   ];
@@ -42,18 +42,16 @@ const Home = () => {
       <section className="bg-gradient-to-r from-blue-500 to-indigo-700 text-white py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {t("home.tagline")}
+            {t("tagline")}
           </h1>
-          <p className="text-xl mb-10 max-w-3xl mx-auto">
-            {t("home.subtitle")}
-          </p>
+          <p className="text-xl mb-10 max-w-3xl mx-auto">{t("subtitle")}</p>
 
           {/* Dashboard Button - Primary CTA */}
           <button
             onClick={handleDashboardClick}
             className="bg-white text-indigo-700 px-8 py-4 rounded-full font-bold text-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-lg mb-6"
           >
-            {user ? t("home.goToDashboard") : t("home.getStarted")}
+            {user ? t("goToDashboard") : t("getStarted")}
           </button>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -61,13 +59,13 @@ const Home = () => {
               to="/find-ride"
               className="bg-transparent border-2 border-white px-6 py-2 rounded-full font-bold hover:bg-white hover:text-indigo-700 transition"
             >
-              {t("home.findRideBtn")}
+              {t("findRideBtn")}
             </Link>
             <Link
               to="/offer-ride"
               className="bg-transparent border-2 border-white px-6 py-2 rounded-full font-bold hover:bg-white hover:text-indigo-700 transition"
             >
-              {t("home.offerRideBtn")}
+              {t("offerRideBtn")}
             </Link>
           </div>
         </div>
@@ -77,7 +75,7 @@ const Home = () => {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-16">
-            {t("home.howItWorks")}
+            {t("howItWorks")}
           </h2>
 
           <Carousel
@@ -105,7 +103,7 @@ const Home = () => {
       <section className="bg-gray-100 py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-16">
-            {t("home.userTestimonials")}
+            {t("userTestimonials")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((item) => (
@@ -114,13 +112,13 @@ const Home = () => {
                   <div className="text-yellow-400 text-2xl">★★★★★</div>
                 </div>
                 <p className="text-gray-600 mb-6 italic">
-                  "{t(`home.testimonial${item}`)}"
+                  "{t(`testimonial${item}`)}"
                 </p>
                 <div className="flex items-center">
                   <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
                   <div className="ml-4">
-                    <h4 className="font-bold">{t(`home.user${item}`)}</h4>
-                    <p className="text-gray-500">{t("home.passenger")}</p>
+                    <h4 className="font-bold">{t(`user${item}`)}</h4>
+                    <p className="text-gray-500">{t("passenger")}</p>
                   </div>
                 </div>
               </div>
@@ -136,7 +134,7 @@ const Home = () => {
             onClick={handleDashboardClick}
             className="bg-white text-indigo-700 px-8 py-4 rounded-full font-bold text-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-lg"
           >
-            {user ? t("home.goToDashboard") : t("home.getStarted")}
+            {user ? t("goToDashboard") : t("getStarted")}
           </button>
         </div>
       </section>
