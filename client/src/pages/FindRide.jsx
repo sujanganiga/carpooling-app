@@ -2,12 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../utils/api";
 import { parsePromptToFilter } from "../utils/aiPromptFilter";
-import { FaStar, FaPhone, FaCheckCircle, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaStar,
+  FaPhone,
+  FaCheckCircle,
+  FaMapMarkerAlt,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import DriftLoading from "../components/DriftLoading";
+import { motion, AnimatePresence } from "framer-motion";
+import Spline from "@splinetool/react-spline";
 
 // Fix for default marker icons in Leaflet with React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -132,6 +140,247 @@ const RideMap = ({ pickup, dropoff }) => {
   );
 };
 
+const Notification = ({ type, message, onClose }) => {
+  const variants = {
+    initial: { opacity: 0, y: -20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
+
+  const bgColor = {
+    success:
+      "bg-green-100 dark:bg-green-900/50 border-green-300 dark:border-green-700",
+    error: "bg-red-100 dark:bg-red-900/50 border-red-300 dark:border-red-700",
+    warning:
+      "bg-yellow-100 dark:bg-yellow-900/50 border-yellow-300 dark:border-yellow-700",
+    info: "bg-blue-100 dark:bg-blue-900/50 border-blue-300 dark:border-blue-700",
+  };
+
+  const textColor = {
+    success: "text-green-700 dark:text-green-300",
+    error: "text-red-700 dark:text-red-300",
+    warning: "text-yellow-700 dark:text-yellow-300",
+    info: "text-blue-700 dark:text-blue-300",
+  };
+
+  return (
+    <motion.div
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className={`fixed top-4 right-4 z-50 p-4 rounded-lg border ${bgColor[type]} ${textColor[type]} shadow-lg`}
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0">
+          {type === "success" && <FaCheckCircle className="w-5 h-5" />}
+          {type === "error" && <FaExclamationTriangle className="w-5 h-5" />}
+          {type === "warning" && <FaExclamationTriangle className="w-5 h-5" />}
+          {type === "info" && <FaInfoCircle className="w-5 h-5" />}
+        </div>
+        <p className="flex-1">{message}</p>
+        <button
+          onClick={onClose}
+          className="flex-shrink-0 hover:opacity-75 transition-opacity"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+const RideCard = ({ ride, onBook, myBooking, user }) => {
+  const { t } = useTranslation();
+  const [showMap, setShowMap] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300"
+    >
+      <div className="flex justify-between items-center mb-4">
+        <motion.div
+          animate={{ x: isHovered ? 5 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h3 className="text-xl font-bold">
+            <span className="text-green-700 dark:text-green-400">
+              {ride.pickupLocation}
+            </span>
+            <span className="text-blue-700 dark:text-blue-400"> → </span>
+            <span className="text-red-700 dark:text-red-400">
+              {ride.dropoffLocation}
+            </span>
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {new Date(ride.departureTime).toLocaleString()} →{" "}
+            {new Date(ride.arrivalTime).toLocaleTimeString()}
+          </p>
+        </motion.div>
+        <motion.div
+          animate={{ scale: isHovered ? 1.1 : 1 }}
+          transition={{ duration: 0.2 }}
+          className="text-right"
+        >
+          <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+            ₹{ride.price}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {ride.seatsAvailable} {t("seatsAvailable")}
+          </p>
+        </motion.div>
+      </div>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowMap(!showMap)}
+        className="mb-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+      >
+        <FaMapMarkerAlt />
+        {showMap ? t("hideMap") : t("viewOnMap")}
+      </motion.button>
+
+      <AnimatePresence>
+        {showMap && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-4 overflow-hidden"
+          >
+            <RideMap
+              pickup={{
+                lat: parseFloat(ride.pickupLat),
+                lng: parseFloat(ride.pickupLng),
+                address: ride.pickupLocation,
+              }}
+              dropoff={{
+                lat: parseFloat(ride.dropoffLat),
+                lng: parseFloat(ride.dropoffLng),
+                address: ride.dropoffLocation,
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+        <div className="flex items-center justify-between">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-4"
+          >
+            <div className="relative">
+              <img
+                src={
+                  ride.driver?.profilePhoto
+                    ? `${process.env.REACT_APP_API_URL}${ride.driver.profilePhoto}`
+                    : "/default-profile.png"
+                }
+                alt={ride.driver?.name}
+                className="w-16 h-16 rounded-full object-cover border-2 border-blue-300 dark:border-blue-500"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/default-profile.png";
+                }}
+              />
+              {ride.driver?.isDriver && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -bottom-1 -right-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full border-2 border-white dark:border-gray-800"
+                >
+                  {t("driver")}
+                </motion.div>
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
+                  {ride.driver?.name}
+                </p>
+                {ride.driver?.rating > 0 && (
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/50 px-2 py-1 rounded-full"
+                  >
+                    <FaStar className="text-yellow-500" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {ride.driver.rating.toFixed(1)}
+                    </span>
+                  </motion.div>
+                )}
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                <FaPhone className="text-gray-400 dark:text-gray-500" />
+                {ride.driver?.phone}
+              </p>
+            </div>
+          </motion.div>
+          {myBooking ? (
+            myBooking.status === "rejected" ? (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold"
+              >
+                {t("rejected")}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 rounded-lg"
+              >
+                <FaCheckCircle className="text-red-600 dark:text-red-400" />
+                {t("bookedByYou")}
+              </motion.div>
+            )
+          ) : user?.isDriver ? (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold"
+            >
+              {t("switchToPassengerMode")}
+            </motion.div>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onBook(ride.id)}
+              className="px-6 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              {t("bookRide")}
+            </motion.button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const FindRide = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -154,7 +403,7 @@ const FindRide = () => {
     page: 1,
     totalPages: 1,
   });
-  const [selectedRide, setSelectedRide] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -237,15 +486,19 @@ const FindRide = () => {
   };
 
   const bookRide = async (rideId) => {
-    if (window.confirm(t("confirmBooking"))) {
-      try {
-        await api.post(`/api/rides/${rideId}/book`);
-        alert(t("rideBookedSuccessfully"));
-        searchRides();
-        fetchMyBookings(); // Refresh bookings after booking
-      } catch (err) {
-        alert(err.response?.data?.message || t("bookingFailed"));
-      }
+    try {
+      await api.post(`/api/rides/${rideId}/book`);
+      setNotification({
+        type: "success",
+        message: t("rideBookedSuccessfully"),
+      });
+      searchRides();
+      fetchMyBookings();
+    } catch (err) {
+      setNotification({
+        type: "error",
+        message: err.response?.data?.message || t("bookingFailed"),
+      });
     }
   };
 
@@ -270,12 +523,30 @@ const FindRide = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-6 bg-gradient-to-tr from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-2xl border border-blue-200 dark:border-gray-700">
-      <h1 className="text-4xl font-extrabold text-center text-blue-800 dark:text-blue-400 mb-10 animate-pulse">
+      <AnimatePresence>
+        {notification && (
+          <Notification
+            type={notification.type}
+            message={notification.message}
+            onClose={() => setNotification(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-4xl font-extrabold text-center text-blue-800 dark:text-blue-400 mb-10"
+      >
         {t("findRide")}
-      </h1>
+      </motion.h1>
 
       {/* AI Search */}
-      <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 border border-blue-100 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 border border-blue-100 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+      >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-2">
             <svg
@@ -415,10 +686,15 @@ const FindRide = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Manual Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-8"
+      >
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-2">
           <svg
             className="w-6 h-6 text-blue-600 dark:text-blue-400"
@@ -631,7 +907,7 @@ const FindRide = () => {
             )}
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Error */}
       {error && (
@@ -645,153 +921,38 @@ const FindRide = () => {
         {loading ? (
           <DriftLoading variant="inline" />
         ) : rides.length === 0 ? (
-          <div className="text-center py-10 text-gray-600 dark:text-gray-400 text-lg italic">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-10 text-gray-600 dark:text-gray-400 text-lg italic"
+          >
             {t("noRidesFound")}
-          </div>
+          </motion.div>
         ) : (
-          rides.map((ride) => {
-            const myBooking = getMyBookingForRide(ride.id);
-            return (
-              <div
+          <AnimatePresence>
+            {rides.map((ride) => (
+              <RideCard
                 key={ride.id}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold">
-                      <span className="text-green-700 dark:text-green-400">
-                        {ride.pickupLocation}
-                      </span>
-                      <span className="text-blue-700 dark:text-blue-400">
-                        {" "}
-                        →{" "}
-                      </span>
-                      <span className="text-red-700 dark:text-red-400">
-                        {ride.dropoffLocation}
-                      </span>
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {new Date(ride.departureTime).toLocaleString()} →{" "}
-                      {new Date(ride.arrivalTime).toLocaleTimeString()}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-semibold text-green-600 dark:text-green-400">
-                      ₹{ride.price}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {ride.seatsAvailable} {t("seatsAvailable")}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Map View Button */}
-                <button
-                  onClick={() =>
-                    setSelectedRide(selectedRide?.id === ride.id ? null : ride)
-                  }
-                  className="mb-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                >
-                  <FaMapMarkerAlt />
-                  {selectedRide?.id === ride.id ? t("hideMap") : t("viewOnMap")}
-                </button>
-
-                {/* Map View */}
-                {selectedRide?.id === ride.id && (
-                  <div className="mb-4">
-                    <RideMap
-                      pickup={{
-                        lat: parseFloat(ride.pickupLat),
-                        lng: parseFloat(ride.pickupLng),
-                        address: ride.pickupLocation,
-                      }}
-                      dropoff={{
-                        lat: parseFloat(ride.dropoffLat),
-                        lng: parseFloat(ride.dropoffLng),
-                        address: ride.dropoffLocation,
-                      }}
-                    />
-                  </div>
-                )}
-
-                <div className="mt-4 border-t border-gray-100 dark:border-gray-700 pt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <img
-                          src={
-                            ride.driver?.profilePhoto
-                              ? `${process.env.REACT_APP_API_URL}${ride.driver.profilePhoto}`
-                              : "/default-profile.png"
-                          }
-                          alt={ride.driver?.name}
-                          className="w-16 h-16 rounded-full object-cover border-2 border-blue-300 dark:border-blue-500"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/default-profile.png";
-                          }}
-                        />
-                        {ride.driver?.isDriver && (
-                          <div className="absolute -bottom-1 -right-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full border-2 border-white dark:border-gray-800">
-                            {t("driver")}
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
-                            {ride.driver?.name}
-                          </p>
-                          {ride.driver?.rating > 0 && (
-                            <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/50 px-2 py-1 rounded-full">
-                              <FaStar className="text-yellow-500" />
-                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {ride.driver.rating.toFixed(1)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                          <FaPhone className="text-gray-400 dark:text-gray-500" />
-                          {ride.driver?.phone}
-                        </p>
-                      </div>
-                    </div>
-                    {myBooking ? (
-                      myBooking.status === "rejected" ? (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold">
-                          {t("rejected") || "Rejected"}
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 rounded-lg">
-                          <FaCheckCircle className="text-red-600 dark:text-red-400" />
-                          {t("bookedByYou")}
-                        </div>
-                      )
-                    ) : user?.isDriver ? (
-                      <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold">
-                        {t("switchToPassengerMode")}
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => bookRide(ride.id)}
-                        className="px-6 py-2.5 bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-                      >
-                        {t("bookRide")}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })
+                ride={ride}
+                onBook={bookRide}
+                myBooking={getMyBookingForRide(ride.id)}
+                user={user}
+              />
+            ))}
+          </AnimatePresence>
         )}
       </div>
 
       {/* Pagination */}
       {pagination.totalPages > 1 && (
-        <div className="mt-10 flex justify-center items-center gap-4">
-          <button
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-10 flex justify-center items-center gap-4"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() =>
               setPagination((prev) => ({
                 ...prev,
@@ -799,14 +960,16 @@ const FindRide = () => {
               }))
             }
             disabled={pagination.page === 1}
-            className="px-4 py-2 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 hover:from-gray-400 hover:to-gray-500 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-gray-200 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("previous")}
-          </button>
+          </motion.button>
           <span className="text-gray-600 dark:text-gray-400 font-medium">
             {t("page")} {pagination.page} {t("of")} {pagination.totalPages}
           </span>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() =>
               setPagination((prev) => ({
                 ...prev,
@@ -814,11 +977,11 @@ const FindRide = () => {
               }))
             }
             disabled={pagination.page === pagination.totalPages}
-            className="px-4 py-2 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 hover:from-gray-400 hover:to-gray-500 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-gray-200 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("next")}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
     </div>
   );

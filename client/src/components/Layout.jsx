@@ -75,9 +75,14 @@ const Layout = ({ children }) => {
             <div className="flex justify-between items-center h-16">
               {/* Logo */}
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                  Carpool
-                </span>
+                <Link
+                  to="/"
+                  className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-200 flex items-center gap-2"
+                >
+                  <span className="transform hover:scale-105 transition-transform duration-200">
+                    Carpool
+                  </span>
+                </Link>
               </div>
               {/* Desktop Nav */}
               <div className="hidden lg:flex lg:space-x-6">
@@ -291,6 +296,14 @@ const Layout = ({ children }) => {
                       className="hover:text-indigo-600 dark:hover:text-indigo-400"
                     >
                       {t("faq") || "FAQ"}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/terms"
+                      className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                    >
+                      {t("termsAndConditions") || "Terms & Conditions"}
                     </Link>
                   </li>
                 </ul>

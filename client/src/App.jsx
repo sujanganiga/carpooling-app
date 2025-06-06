@@ -19,6 +19,10 @@ import FindRide from "./pages/FindRide";
 import OfferRide from "./pages/OfferRide";
 import MyRides from "./pages/MyRides";
 import Home from "./pages/Home";
+import HelpCenter from "./pages/HelpCenter";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Terms from "./pages/Terms";
 
 // New DriverRoute component
 const DriverRoute = ({ children }) => {
@@ -57,6 +61,10 @@ function App() {
                       <Route path="/" element={<Home />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
+                      <Route path="/help" element={<HelpCenter />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/terms" element={<Terms />} />
 
                       {/* Protected routes */}
                       <Route

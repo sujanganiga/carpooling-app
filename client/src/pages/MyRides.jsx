@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaCar,
   FaUserFriends,
@@ -15,9 +16,55 @@ import {
   FaClock,
   FaTrash,
   FaTimes,
+  FaExclamationTriangle,
+  FaInfoCircle,
 } from "react-icons/fa";
 import ReviewModal from "../components/ReviewModal";
 import DriftLoading from "../components/DriftLoading";
+
+// Toast notification component
+const Toast = ({ message, type, onClose }) => {
+  const bgColor = {
+    success:
+      "bg-green-100 dark:bg-green-900/50 border-green-300 dark:border-green-700",
+    error: "bg-red-100 dark:bg-red-900/50 border-red-300 dark:border-red-700",
+    warning:
+      "bg-yellow-100 dark:bg-yellow-900/50 border-yellow-300 dark:border-yellow-700",
+    info: "bg-blue-100 dark:bg-blue-900/50 border-blue-300 dark:border-blue-700",
+  };
+
+  const textColor = {
+    success: "text-green-700 dark:text-green-300",
+    error: "text-red-700 dark:text-red-300",
+    warning: "text-yellow-700 dark:text-yellow-300",
+    info: "text-blue-700 dark:text-blue-300",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className={`fixed top-4 right-4 z-50 p-4 rounded-lg border ${bgColor[type]} ${textColor[type]} shadow-lg`}
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0">
+          {type === "success" && <FaCheckCircle className="w-5 h-5" />}
+          {type === "error" && <FaExclamationTriangle className="w-5 h-5" />}
+          {type === "warning" && <FaExclamationTriangle className="w-5 h-5" />}
+          {type === "info" && <FaInfoCircle className="w-5 h-5" />}
+        </div>
+        <p className="flex-1">{message}</p>
+        <button
+          onClick={onClose}
+          className="flex-shrink-0 hover:opacity-75 transition-opacity"
+        >
+          <FaTimes className="w-4 h-4" />
+        </button>
+      </div>
+    </motion.div>
+  );
+};
 
 const MyRides = () => {
   const { t } = useTranslation();
@@ -32,6 +79,12 @@ const MyRides = () => {
   const [error, setError] = useState("");
   const [selectedRide, setSelectedRide] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "info") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   const fetchMyRides = async () => {
     setLoading(true);
@@ -41,65 +94,54 @@ const MyRides = () => {
       const response = await api.get("/api/rides/my-rides");
       setRides(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || t("loadFailed"));
-      console.error("Error fetching rides:", err);
+      const errorMessage = err.response?.data?.message || t("loadFailed");
+      setError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setLoading(false);
     }
   };
 
   const completeRide = async (rideId) => {
-    if (window.confirm(t("confirmCompleteRide"))) {
-      try {
-        await api.post(`/api/rides/${rideId}/complete`);
-        alert(t("rideCompletedSuccessfully"));
-        fetchMyRides();
-      } catch (err) {
-        alert(err.response?.data?.message || t("completionFailed"));
-      }
+    try {
+      await api.post(`/api/rides/${rideId}/complete`);
+      showToast(t("rideCompletedSuccessfully"), "success");
+      fetchMyRides();
+    } catch (err) {
+      showToast(err.response?.data?.message || t("completionFailed"), "error");
     }
   };
 
   const confirmBooking = async (bookingId) => {
-    if (window.confirm(t("confirmBookingRequest"))) {
-      try {
-        await api.post(`/api/rides/bookings/${bookingId}/confirm`);
-        alert(t("bookingConfirmedSuccessfully"));
-        fetchMyRides();
-      } catch (err) {
-        alert(err.response?.data?.message || t("confirmationFailed"));
-      }
+    try {
+      await api.post(`/api/rides/bookings/${bookingId}/confirm`);
+      showToast(t("bookingConfirmedSuccessfully"), "success");
+      fetchMyRides();
+    } catch (err) {
+      showToast(
+        err.response?.data?.message || t("confirmationFailed"),
+        "error"
+      );
     }
   };
 
   const rejectBooking = async (bookingId) => {
-    if (window.confirm(t("confirmRejectBooking"))) {
-      try {
-        console.log("Attempting to reject booking:", bookingId);
-        const response = await api.post(
-          `/api/rides/bookings/${bookingId}/reject`
-        );
-        console.log("Reject booking response:", response.data);
-        alert(t("bookingRejectedSuccessfully"));
-        fetchMyRides();
-      } catch (err) {
-        console.error("Error rejecting booking:", err);
-        const errorMessage =
-          err.response?.data?.message || t("rejectionFailed");
-        alert(errorMessage);
-      }
+    try {
+      await api.post(`/api/rides/bookings/${bookingId}/reject`);
+      showToast(t("bookingRejectedSuccessfully"), "success");
+      fetchMyRides();
+    } catch (err) {
+      showToast(err.response?.data?.message || t("rejectionFailed"), "error");
     }
   };
 
   const deleteRide = async (rideId) => {
-    if (window.confirm(t("confirmDeleteRide"))) {
-      try {
-        await api.delete(`/api/rides/${rideId}`);
-        alert(t("rideDeletedSuccessfully"));
-        fetchMyRides();
-      } catch (err) {
-        alert(err.response?.data?.message || t("deletionFailed"));
-      }
+    try {
+      await api.delete(`/api/rides/${rideId}`);
+      showToast(t("rideDeletedSuccessfully"), "success");
+      fetchMyRides();
+    } catch (err) {
+      showToast(err.response?.data?.message || t("deletionFailed"), "error");
     }
   };
 
@@ -121,6 +163,7 @@ const MyRides = () => {
           : booking
       ),
     }));
+    showToast(t("reviewSubmittedSuccessfully"), "success");
   };
 
   const formatDate = (dateString) => {
@@ -132,59 +175,56 @@ const MyRides = () => {
   };
 
   const renderStatusBadge = (status, reviewed) => {
-    // if (reviewed) {
-    //   return (
-    //     <span className="px-3 py-1 bg-green-100 text-red-800 rounded-full text-sm font-medium">
-    //       {t("review.reviewed")}
-    //     </span>
-    //   );
-    // }
+    const statusConfig = {
+      pending: {
+        icon: <FaClock className="text-yellow-600" />,
+        bg: "bg-yellow-100 dark:bg-yellow-900/50",
+        text: "text-yellow-800 dark:text-yellow-300",
+        label: t("pending"),
+      },
+      upcoming: {
+        bg: "bg-blue-100 dark:bg-blue-900/50",
+        text: "text-blue-800 dark:text-blue-300",
+        label: t("upcoming"),
+      },
+      confirmed: {
+        bg: "bg-green-100 dark:bg-green-900/50",
+        text: "text-green-800 dark:text-green-300",
+        label: t("confirmed"),
+      },
+      "in-progress": {
+        bg: "bg-yellow-100 dark:bg-yellow-900/50",
+        text: "text-yellow-800 dark:text-yellow-300",
+        label: t("inProgress"),
+      },
+      completed: {
+        bg: "bg-green-100 dark:bg-green-900/50",
+        text: "text-green-800 dark:text-green-300",
+        label: t("completed"),
+      },
+      cancelled: {
+        bg: "bg-red-100 dark:bg-red-900/50",
+        text: "text-red-800 dark:text-red-300",
+        label: t("cancelled"),
+      },
+    };
 
-    switch (status) {
-      case "pending":
-        return (
-          <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium flex items-center gap-1">
-            <FaClock className="text-yellow-600" />
-            {t("pending")}
-          </span>
-        );
-      case "upcoming":
-        return (
-          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-            {t("upcoming")}
-          </span>
-        );
-      case "confirmed":
-        return (
-          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-            {t("confirmed")}
-          </span>
-        );
-      case "in-progress":
-        return (
-          <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-            {t("inProgress")}
-          </span>
-        );
-      case "completed":
-        return (
-          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-            {t("completed")}
-          </span>
-        );
-      case "cancelled":
-        return (
-          <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-            {t("cancelled")}
-          </span>
-        );
-      default:
-        return (
-          <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
-            {status}
-          </span>
-        );
-    }
+    const config = statusConfig[status] || {
+      bg: "bg-gray-100 dark:bg-gray-900/50",
+      text: "text-gray-800 dark:text-gray-300",
+      label: status,
+    };
+
+    return (
+      <motion.span
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`px-3 py-1 ${config.bg} ${config.text} rounded-full text-sm font-medium flex items-center gap-1`}
+      >
+        {config.icon}
+        {config.label}
+      </motion.span>
+    );
   };
 
   if (loading) {
@@ -194,39 +234,60 @@ const MyRides = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-10 px-6 lg:px-20">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-center text-teal-700 dark:text-teal-400 mb-12 animate-fade-in">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-extrabold text-center text-teal-700 dark:text-teal-400 mb-12"
+        >
           {t("myRides")}
-        </h1>
+        </motion.h1>
 
-        {error && (
-          <div className="max-w-3xl mx-auto bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 p-4 rounded-lg mb-8 border border-red-300 dark:border-red-700 animate-fade-in">
-            {error}
-          </div>
-        )}
+        <AnimatePresence>
+          {toast && (
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast(null)}
+            />
+          )}
+        </AnimatePresence>
 
         <div className="space-y-16">
-          <section className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl shadow-lg p-8 animate-slide-in-up">
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl shadow-lg p-8"
+          >
             <h2 className="text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-6 flex items-center gap-2">
               <FaUserTie className="text-purple-600 dark:text-purple-500" />{" "}
               {t("ridesAsDriver")}
             </h2>
 
             {rides.asDriver.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400 italic">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-gray-500 dark:text-gray-400 italic"
+              >
                 {t("noRidesAsDriver")}
-              </p>
+              </motion.p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {rides.asDriver.map((ride) => {
+                {rides.asDriver.map((ride, index) => {
                   const { date, time: departureTime } = formatDate(
                     ride.departureTime
                   );
                   const { time: arrivalTime } = formatDate(ride.arrivalTime);
 
                   return (
-                    <div
+                    <motion.div
                       key={ride.id}
-                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-shadow duration-300"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300"
                     >
                       <div className="flex justify-between items-center mb-4">
                         <div>
@@ -254,8 +315,10 @@ const MyRides = () => {
                         </h4>
                         <div className="space-y-3">
                           {ride.bookings?.map((booking) => (
-                            <div
+                            <motion.div
                               key={booking.id}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
                               className="flex items-center justify-between py-2 px-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
                             >
                               <div className="flex items-center gap-3">
@@ -285,55 +348,70 @@ const MyRides = () => {
                                 {renderStatusBadge(booking.status)}
                                 {booking.status === "pending" && (
                                   <div className="flex gap-2">
-                                    <button
+                                    <motion.button
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
                                       onClick={() => confirmBooking(booking.id)}
                                       className="bg-green-500 dark:bg-green-600 text-white px-3 py-1 rounded-lg text-sm font-medium hover:bg-green-600 dark:hover:bg-green-700 transition-colors"
                                     >
                                       {t("accept")}
-                                    </button>
-                                    <button
+                                    </motion.button>
+                                    <motion.button
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
                                       onClick={() => rejectBooking(booking.id)}
                                       className="bg-red-500 dark:bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-medium hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
                                     >
                                       {t("reject")}
-                                    </button>
+                                    </motion.button>
                                   </div>
                                 )}
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                         {(!ride.bookings || ride.bookings.length === 0) && (
                           <div className="mt-4 flex justify-end">
-                            <button
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
                               onClick={() => deleteRide(ride.id)}
                               className="flex items-center gap-2 px-4 py-2 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
                             >
                               <FaTrash /> {t("deleteRide")}
-                            </button>
+                            </motion.button>
                           </div>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
             )}
-          </section>
+          </motion.section>
 
-          <section className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl shadow-lg p-8 animate-slide-in-up">
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl shadow-lg p-8"
+          >
             <h2 className="text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-6 flex items-center gap-2">
               <FaHourglassHalf className="text-purple-600 dark:text-purple-500" />{" "}
               {t("ridesAsPassenger")}
             </h2>
 
             {rides.asPassenger.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400 italic">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-gray-500 dark:text-gray-400 italic"
+              >
                 {t("noRidesAsPassenger")}
-              </p>
+              </motion.p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {rides.asPassenger.map((booking) => {
+                {rides.asPassenger.map((booking, index) => {
                   const { date, time: departureTime } = formatDate(
                     booking.ride?.departureTime
                   );
@@ -342,9 +420,13 @@ const MyRides = () => {
                   );
 
                   return (
-                    <div
+                    <motion.div
                       key={booking.id}
-                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-shadow duration-300"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300"
                     >
                       <div className="flex justify-between items-center mb-4">
                         <div>
@@ -396,45 +478,55 @@ const MyRides = () => {
 
                         <div className="flex gap-2">
                           {booking.status === "confirmed" && (
-                            <button
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
                               onClick={() => completeRide(booking.rideId)}
                               className="bg-green-500 dark:bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 dark:hover:bg-green-700 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2"
                             >
                               <FaCheckCircle /> {t("completeRide")}
-                            </button>
+                            </motion.button>
                           )}
 
                           {booking.status === "completed" &&
                             (booking.reviewed ? (
-                              <span className="px-4 py-2 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 rounded-lg font-medium shadow-md">
+                              <motion.span
+                                initial={{ scale: 0.9 }}
+                                animate={{ scale: 1 }}
+                                className="px-4 py-2 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 rounded-lg font-medium shadow-md"
+                              >
                                 {t("Reviewed")}
-                              </span>
+                              </motion.span>
                             ) : (
-                              <button
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => handleReviewClick(booking)}
                                 className="bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                               >
                                 {t("leaveReview")}
-                              </button>
+                              </motion.button>
                             ))}
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
             )}
-          </section>
+          </motion.section>
         </div>
       </div>
 
-      {showReviewModal && selectedRide && (
-        <ReviewModal
-          ride={selectedRide}
-          onClose={() => setShowReviewModal(false)}
-          onReviewSubmitted={handleReviewSubmitted}
-        />
-      )}
+      <AnimatePresence>
+        {showReviewModal && selectedRide && (
+          <ReviewModal
+            ride={selectedRide}
+            onClose={() => setShowReviewModal(false)}
+            onReviewSubmitted={handleReviewSubmitted}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

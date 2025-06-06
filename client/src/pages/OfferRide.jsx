@@ -21,13 +21,14 @@ L.Icon.Default.mergeOptions({
 
 const MapComponent = ({ position, setPosition, setLocationName }) => {
   const map = useMap();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (position) {
       map.setView(position, 13);
-      // Reverse geocode to get location name
+      // Reverse geocode to get location name with language support
       fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}&accept-language=${i18n.language}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -37,7 +38,7 @@ const MapComponent = ({ position, setPosition, setLocationName }) => {
         })
         .catch((err) => console.error("Error getting location name:", err));
     }
-  }, [position, map, setLocationName]);
+  }, [position, map, setLocationName, i18n.language]);
 
   useEffect(() => {
     const handleMapClick = (e) => {
@@ -100,7 +101,7 @@ const SearchBar = ({ onSearch, placeholder }) => {
 
 const OfferRide = () => {
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -127,7 +128,7 @@ const OfferRide = () => {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           searchTerm
-        )}`
+        )}&accept-language=${i18n.language}`
       );
       const data = await response.json();
 
@@ -471,11 +472,6 @@ const OfferRide = () => {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   required
                 />
-                {suggestedPrice && (
-                  <p className="mt-2 text-sm text-teal-600 dark:text-teal-400">
-                    Suggested price: ₹{suggestedPrice} (based on distance)
-                  </p>
-                )}
                 {priceWarning && (
                   <p className="mt-2 text-sm text-red-600 dark:text-red-400">
                     {priceWarning}
