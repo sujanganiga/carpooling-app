@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Add trailing slash to ensure consistent URL concatenation
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,7 +9,7 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
   // Add withCredentials if using cookies for auth
-  withCredentials: false,
+  withCredentials: true,
 });
 
 // Enhanced request interceptor

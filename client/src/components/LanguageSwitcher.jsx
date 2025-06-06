@@ -11,7 +11,7 @@ const LanguageSwitcher = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white border hover:bg-gray-50"
+        className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
       >
         <span>{currentLang?.flag}</span>
         <span className="text-sm">{currentLang?.name}</span>
@@ -31,7 +31,7 @@ const LanguageSwitcher = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -39,9 +39,9 @@ const LanguageSwitcher = () => {
                 changeLanguage(lang.code);
                 setIsOpen(false);
               }}
-              className={`w-full flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
+              className={`w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg ${
                 currentLanguage === lang.code
-                  ? "bg-primary-50 text-primary-600"
+                  ? "bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300"
                   : ""
               }`}
             >

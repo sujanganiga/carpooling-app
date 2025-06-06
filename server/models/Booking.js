@@ -26,8 +26,18 @@ const Booking = sequelize.define(
       },
     },
     status: {
-      type: DataTypes.ENUM("pending", "confirmed", "completed", "cancelled"),
+      type: DataTypes.ENUM(
+        "pending",
+        "confirmed",
+        "rejected",
+        "completed",
+        "cancelled"
+      ),
       defaultValue: "pending",
+    },
+    reviewed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
@@ -35,5 +45,11 @@ const Booking = sequelize.define(
     timestamps: true,
   }
 );
+
+// Define associations
+Booking.associate = (models) => {
+  Booking.belongsTo(models.Ride, { foreignKey: "rideId", as: "ride" });
+  Booking.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+};
 
 module.exports = Booking;

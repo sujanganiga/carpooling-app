@@ -6,36 +6,28 @@ require("dotenv").config();
 // server/app.js
 const path = require("path");
 
-// Add this near other middleware
-// Import models
-const User = require("./models/User");
-const Ride = require("./models/Ride");
-const Booking = require("./models/Booking");
-
-// Establish associations
-User.hasMany(Ride, { foreignKey: "createdBy", as: "rides" });
-User.hasMany(Booking, { foreignKey: "userId", as: "bookings" });
-
-Ride.belongsTo(User, { foreignKey: "createdBy", as: "driver" });
-Ride.hasMany(Booking, { foreignKey: "rideId", as: "bookings" });
-
-Booking.belongsTo(User, { foreignKey: "userId", as: "user" });
-Booking.belongsTo(Ride, { foreignKey: "rideId", as: "ride" });
-
 // Import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const rideRoutes = require("./routes/rides");
+const reviewRoutes = require("./routes/review");
 
 const app = express();
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "unsafe-none" },
+  })
+);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3001",
+    origin: true, // Allow all origins in development
     credentials: true,
-    exposedHeaders: ["Content-Disposition"], // Keep this one
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Disposition", "Cross-Origin-Resource-Policy"],
   })
 );
 app.use(morgan("combined"));
@@ -44,8 +36,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/rides", rideRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/rides", rideRoutes);
+app.use("/api/reviews", reviewRoutes);
 // server/app.js
 // Add this before your routes
 // server/app.js

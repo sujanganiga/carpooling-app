@@ -35,11 +35,50 @@ const User = sequelize.define(
       allowNull: true,
       defaultValue: "/default-profile.png",
     },
+    rating: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0.0,
+      validate: {
+        min: 0,
+        max: 5,
+      },
+    },
+    // Driver specific fields
+    carModel: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    carPlate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    licenseNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    carColor: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    carCapacity: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 10,
+      },
+    },
   },
   {
     tableName: "users",
     timestamps: true,
   }
 );
+
+// Define associations
+User.associate = (models) => {
+  User.hasMany(models.Ride, { foreignKey: "createdBy", as: "offeredRides" });
+  User.hasMany(models.Booking, { foreignKey: "userId", as: "userBookings" });
+};
 
 module.exports = User;

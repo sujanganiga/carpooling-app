@@ -36,23 +36,23 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-50 via-white to-teal-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md bg-white/70 backdrop-blur-md border border-gray-200 rounded-3xl shadow-2xl p-8 animate-slide-in-up">
-        <h2 className="text-center text-3xl font-extrabold text-teal-700 mb-6 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-tr from-purple-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md bg-white/70 dark:bg-gray-800/70 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-3xl shadow-2xl p-8 animate-slide-in-up">
+        <h2 className="text-center text-3xl font-extrabold text-teal-700 dark:text-teal-400 mb-6 animate-fade-in">
           {t("signinToAccount")}
         </h2>
-        <p className="text-center text-sm text-gray-600 mb-6">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
           {t("or")}{" "}
           <Link
             to="/register"
-            className="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+            className="font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 transition-colors"
           >
             {t("createNewAccount")}
           </Link>
         </p>
 
         {error && (
-          <div className="flex items-center mb-6 bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 animate-fade-in">
+          <div className="flex items-center mb-6 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 p-3 rounded-lg border border-red-300 dark:border-red-700 animate-fade-in">
             <span className="text-sm">{error}</span>
           </div>
         )}
@@ -72,7 +72,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder={t("email")}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             <div className="group">
@@ -88,7 +88,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder={t("password")}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50"
             >
               {loading ? t("loading") + "..." : t("signin")}
             </button>

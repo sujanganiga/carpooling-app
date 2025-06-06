@@ -4,16 +4,113 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
+      // Common
+      loading: "Loading",
+      error: "Error",
+      success: "Success",
+      save: "Save",
+      cancel: "Cancel",
+      confirm: "Confirm",
+      delete: "Delete",
+      edit: "Edit",
+      search: "Search",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      of: "of",
+
       // Auth
       login: "Login",
       register: "Register",
+      logout: "Logout",
       email: "Email",
       password: "Password",
       name: "Name",
-      phone: "Phone Number",
-      signin: "Sign In",
-      signup: "Sign Up",
-      logout: "Logout",
+      phone: "Phone",
+      loginSuccess: "Login successful",
+      registerSuccess: "Registration successful",
+      logoutSuccess: "Logout successful",
+
+      // Profile
+      profile: "Profile",
+      updateProfile: "Update Profile",
+      driverMode: "Driver Mode",
+      passengerMode: "Passenger Mode",
+      switchToDriver: "Switch to Driver Mode",
+      switchToPassenger: "Switch to Passenger Mode",
+      carDetails: "Car Details",
+      carModel: "Car Model",
+      carPlate: "License Plate",
+      licenseNumber: "License Number",
+      carColor: "Car Color",
+      carCapacity: "Car Capacity",
+      profilePhoto: "Profile Photo",
+      uploadPhoto: "Upload Photo",
+
+      // Rides
+      findRide: "Find a Ride",
+      offerRide: "Offer a Ride",
+      myRides: "My Rides",
+      ridesAsDriver: "Rides as Driver",
+      ridesAsPassenger: "Rides as Passenger",
+      noRidesAsDriver: "You haven't offered any rides yet",
+      noRidesAsPassenger: "You haven't booked any rides yet",
+      pickupLocation: "Pickup Location",
+      dropoffLocation: "Dropoff Location",
+      departureTime: "Departure Time",
+      arrivalTime: "Arrival Time",
+      price: "Price",
+      seatsAvailable: "Seats Available",
+      bookRide: "Book Ride",
+      completeRide: "Complete Ride",
+      leaveReview: "Leave Review",
+      driver: "Driver",
+      passenger: "Passenger",
+      pending: "Pending",
+      confirmed: "Confirmed",
+      completed: "Completed",
+      cancelled: "Cancelled",
+      inProgress: "In Progress",
+      upcoming: "Upcoming",
+      waitingForDriverConfirmation: "Waiting for driver confirmation",
+      confirmBookingRequest: "Are you sure you want to confirm this booking?",
+      bookingConfirmedSuccessfully: "Booking confirmed successfully",
+      confirmationFailed: "Failed to confirm booking",
+      confirmCompleteRide:
+        "Are you sure you want to mark this ride as completed?",
+      rideCompletedSuccessfully: "Ride completed successfully",
+      completionFailed: "Failed to complete ride",
+
+      // Reviews
+      review: {
+        title: "Review",
+        rating: "Rating",
+        comment: "Comment",
+        submit: "Submit Review",
+        success: "Review submitted successfully",
+        failed: "Failed to submit review",
+        reviewed: "Reviewed",
+      },
+
+      // Search
+      searchWithAI: "Search with AI",
+      aiPlaceholder: "Describe the ride you're looking for...",
+      enterPickupLocation: "Enter pickup location",
+      enterDropoffLocation: "Enter dropoff location",
+      enterMaxPrice: "Enter maximum price",
+      enterMinSeats: "Enter minimum seats",
+      searchRides: "Search Rides",
+      searching: "Searching",
+      loadingRides: "Loading rides...",
+      noRidesFound: "No rides found",
+      seatsAvailable: "seats available",
+
+      // Messages
+      loadFailed: "Failed to load data",
+      searchFailed: "Search failed",
+      bookingFailed: "Booking failed",
+      rideBookedSuccessfully: "Ride booked successfully",
+      confirmBooking: "Are you sure you want to book this ride?",
 
       // Navigation
       home: "Home",
@@ -26,10 +123,10 @@ const resources = {
       // Dashboard
       welcome: "Welcome",
       toggleDriver: "Switch to Driver Mode",
-      toggleRider: "Switch to Rider Mode",
+      togglePassenger: "Switch to Passenger Mode",
       currentMode: "Current Mode",
       driver: "Driver",
-      rider: "Rider",
+      passenger: "Passenger",
 
       // Find Ride
       searchRides: "Search Rides",
@@ -53,7 +150,7 @@ const resources = {
 
       // My Rides
       ridesAsDriver: "Rides as Driver",
-      ridesAsRider: "Rides as Rider",
+      ridesAsPassenger: "Rides as Passenger",
       noRides: "No rides found",
       completeRide: "Mark Complete",
 
@@ -70,14 +167,14 @@ const resources = {
         "You need to switch to driver mode to offer rides",
       goToProfile: "Go to Profile",
       driverModeEnabled: "You are in driver mode",
-      riderModeEnabled: "You are in rider mode",
+      passengerModeEnabled: "You are in passenger mode",
       youAreInDriverMode: "You are in driver mode and can offer rides",
-      youAreInRiderMode: "You are in rider mode and can book rides",
+      youAreInPassengerMode: "You are in passenger mode and can book rides",
       currentMode: "Current Mode",
       driver: "Driver",
-      rider: "Rider",
+      passenger: "Passenger",
       switchToDriverMode: "Switch to Driver Mode",
-      switchToRiderMode: "Switch to Rider Mode",
+      switchToPassengerMode: "Switch to Passenger Mode",
       quickActions: "Quick Actions",
       findRide: "Find Ride",
       offerRide: "Offer Ride",
@@ -138,6 +235,9 @@ const resources = {
       driver: "Driver",
       getStarted: "Get Started Now",
       goToDashboard: "Go to Dashboard",
+      review: {
+        reviewed: "Feedback Submitted",
+      },
       // Footer
       footer: {
         description: "Connecting people. Saving the planet.",
@@ -181,10 +281,10 @@ const resources = {
       // Dashboard
       welcome: "ಸ್ವಾಗತ",
       toggleDriver: "ಡ್ರೈವರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
-      toggleRider: "ರೈಡರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
+      togglePassenger: "ಪ್ಯಾಸೆಂಜರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
       currentMode: "ಪ್ರಸ್ತುತ ಮೋಡ್",
       driver: "ಡ್ರೈವರ್",
-      rider: "ರೈಡರ್",
+      passenger: "ಪ್ಯಾಸೆಂಜರ್",
 
       // Find Ride
       searchRides: "ರೈಡ್‌ಗಳನ್ನು ಹುಡುಕಿ",
@@ -209,7 +309,7 @@ const resources = {
 
       // My Rides
       ridesAsDriver: "ಡ್ರೈವರ್ ಆಗಿ ರೈಡ್‌ಗಳು",
-      ridesAsRider: "ರೈಡರ್ ಆಗಿ ರೈಡ್‌ಗಳು",
+      ridesAsPassenger: "ಪ್ಯಾಸೆಂಜರ್ ಆಗಿ ರೈಡ್‌ಗಳು",
       noRides: "ಯಾವುದೇ ರೈಡ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
       completeRide: "ಪೂರ್ಣಗೊಳಿಸಿ ಎಂದು ಗುರುತಿಸಿ",
 
@@ -226,16 +326,16 @@ const resources = {
         "ರೈಡ್‌ಗಳನ್ನು ನೀಡಲು ನೀವು ಡ್ರೈವರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಬೇಕು",
       goToProfile: "ಪ್ರೊಫೈಲ್‌ಗೆ ಹೋಗಿ",
       driverModeEnabled: "ನೀವು ಡ್ರೈವರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ",
-      riderModeEnabled: "ನೀವು ರೈಡರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ",
+      passengerModeEnabled: "ನೀವು ಪ್ಯಾಸೆಂಜರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ",
       youAreInDriverMode:
         "ನೀವು ಡ್ರೈವರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ ಮತ್ತು ರೈಡ್‌ಗಳನ್ನು ನೀಡಬಹುದು",
-      youAreInRiderMode:
-        "ನೀವು ರೈಡರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ ಮತ್ತು ರೈಡ್‌ಗಳನ್ನು ಬುಕ್ ಮಾಡಬಹುದು",
+      youAreInPassengerMode:
+        "ನೀವು ಪ್ಯಾಸೆಂಜರ್ ಮೋಡ್‌ನಲ್ಲಿದ್ದೀರಿ ಮತ್ತು ರೈಡ್‌ಗಳನ್ನು ಬುಕ್ ಮಾಡಬಹುದು",
       currentMode: "ಪ್ರಸ್ತುತ ಮೋಡ್",
       driver: "ಡ್ರೈವರ್",
-      rider: "ರೈಡರ್",
+      passenger: "ಪ್ಯಾಸೆಂಜರ್",
       switchToDriverMode: "ಡ್ರೈವರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
-      switchToRiderMode: "ರೈಡರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
+      switchToPassengerMode: "ಪ್ಯಾಸೆಂಜರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
       quickActions: "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
       findRide: "ರೈಡ್ ಹುಡುಕಿ",
       offerRide: "ರೈಡ್ ನೀಡಿ",
@@ -334,10 +434,10 @@ const resources = {
 
       welcome: "स्वागत है",
       toggleDriver: "ड्राइवर मोड पर स्विच करें",
-      toggleRider: "राइडर मोड पर स्विच करें",
+      togglePassenger: "पैसेंजर मोड पर स्विच करें",
       currentMode: "वर्तमान मोड",
       driver: "ड्राइवर",
-      rider: "राइडर",
+      passenger: "पैसेंजर",
 
       searchRides: "सवारियाँ खोजें",
       pickupLocation: "पिकअप स्थान",
@@ -358,7 +458,7 @@ const resources = {
       offerRideBtn: "सवारी ऑफर करें",
 
       ridesAsDriver: "ड्राइवर के रूप में सवारियाँ",
-      ridesAsRider: "राइडर के रूप में सवारियाँ",
+      ridesAsPassenger: "पैसेंजर के रूप में सवारियाँ",
       noRides: "कोई सवारी नहीं मिली",
       completeRide: "पूर्ण करें",
 
@@ -373,11 +473,11 @@ const resources = {
         "सवारी देने के लिए कृपया ड्राइवर मोड पर स्विच करें",
       goToProfile: "प्रोफ़ाइल पर जाएँ",
       driverModeEnabled: "आप ड्राइवर मोड में हैं",
-      riderModeEnabled: "आप राइडर मोड में हैं",
+      passengerModeEnabled: "आप पैसेंजर मोड में हैं",
       youAreInDriverMode: "आप ड्राइवर मोड में हैं और सवारी ऑफर कर सकते हैं",
-      youAreInRiderMode: "आप राइडर मोड में हैं और सवारी बुक कर सकते हैं",
+      youAreInPassengerMode: "आप पैसेंजर मोड में हैं और सवारी बुक कर सकते हैं",
       switchToDriverMode: "ड्राइवर मोड पर जाएँ",
-      switchToRiderMode: "राइडर मोड पर जाएँ",
+      switchToPassengerMode: "पैसेंजर मोड पर जाएँ",
       quickActions: "त्वरित क्रियाएं",
       quickLinks: "त्वरित लिंक",
       recentActivity: "हाल की गतिविधि",

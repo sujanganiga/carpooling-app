@@ -18,8 +18,25 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone } = req.body;
+    const {
+      name,
+      phone,
+      carModel,
+      carPlate,
+      licenseNumber,
+      carColor,
+      carCapacity,
+    } = req.body;
     const updates = { name, phone };
+
+    // Only update driver info if user is a driver
+    if (req.user.isDriver) {
+      updates.carModel = carModel;
+      updates.carPlate = carPlate;
+      updates.licenseNumber = licenseNumber;
+      updates.carColor = carColor;
+      updates.carCapacity = carCapacity ? parseInt(carCapacity, 10) : null;
+    }
 
     if (req.file) {
       // Delete old photo if it's not default
