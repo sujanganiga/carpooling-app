@@ -295,7 +295,7 @@ const Layout = ({ children }) => {
                       to="/faq"
                       className="hover:text-indigo-600 dark:hover:text-indigo-400"
                     >
-                      {t("faq") || "FAQ"}
+                      {t("faqs") || "FAQs"}
                     </Link>
                   </li>
                   <li>
@@ -316,7 +316,7 @@ const Layout = ({ children }) => {
                 </h4>
                 <div className="flex space-x-4 text-xl">
                   <a
-                    href="https://facebook.com"
+                    href="https://www.facebook.com/profile.php?id=61576854194608"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                     target="_blank"
                     rel="noreferrer"
@@ -324,7 +324,7 @@ const Layout = ({ children }) => {
                     <i className="fab fa-facebook"></i>
                   </a>
                   <a
-                    href="https://twitter.com"
+                    href="https://x.com/carpool312025"
                     className="text-blue-400 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-200"
                     target="_blank"
                     rel="noreferrer"

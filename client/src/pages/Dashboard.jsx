@@ -257,7 +257,7 @@ const Dashboard = () => {
               },
               {
                 icon: (
-                  <FaExchangeAlt className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  <FaExchangeAlt className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 ),
                 label: t("currentMode"),
                 value: user?.isDriver ? t("driverMode") : t("passengerMode"),
@@ -414,5 +414,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;

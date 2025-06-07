@@ -428,9 +428,9 @@ const getMyRides = async (req, res) => {
 const deleteRide = async (req, res) => {
   try {
     const rideId = req.params.rideId;
-    const ride = await Ride.findByPk(rideId, {
-      include: [{ model: Booking, as: "bookings" }],
-    });
+
+    // First check if the ride exists
+    const ride = await Ride.findByPk(rideId);
 
     if (!ride) {
       return res.status(404).json({ message: "Ride not found" });
@@ -444,17 +444,31 @@ const deleteRide = async (req, res) => {
     }
 
     // Check if there are any bookings
-    if (ride.bookings && ride.bookings.length > 0) {
+    const bookings = await Booking.findAll({
+      where: { rideId: rideId },
+    });
+
+    if (bookings && bookings.length > 0) {
       return res
         .status(400)
         .json({ message: "Cannot delete ride with existing bookings" });
     }
 
+    // Delete any associated reviews first
+    await Review.destroy({
+      where: { rideId: rideId },
+    });
+
+    // Delete the ride
     await ride.destroy();
+
     res.json({ message: "Ride deleted successfully" });
   } catch (error) {
     console.error("Delete ride error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 

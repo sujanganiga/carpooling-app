@@ -207,6 +207,11 @@ const MyRides = () => {
         text: "text-red-800 dark:text-red-300",
         label: t("cancelled"),
       },
+      rejected: {
+        bg: "bg-red-100 dark:bg-red-900/50",
+        text: "text-red-800 dark:text-red-300",
+        label: t("rejected"),
+      },
     };
 
     const config = statusConfig[status] || {
