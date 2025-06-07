@@ -11,46 +11,35 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
       rejectUnauthorized: false,
     },
   },
-  logging: false, // Disable logging in production
 });
 
 module.exports = sequelize;
 */
 
-require("dotenv").config(); // 👈 Load environment variables
+require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const config = require("./config.js");
 
 const env = process.env.NODE_ENV || "development";
 const dbConfig = config[env];
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres",
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-  logging: false,
-  retry: {
-    match: [
-      /SequelizeConnectionError/,
-      /SequelizeConnectionRefusedError/,
-      /SequelizeHostNotFoundError/,
-      /SequelizeHostNotReachableError/,
-      /SequelizeInvalidConnectionError/,
-      /SequelizeConnectionTimedOutError/,
-      /TimeoutError/,
-    ],
-    max: 3,
-  },
-});
+let sequelize;
+
+if (dbConfig.use_env_variable) {
+  sequelize = new Sequelize(process.env[dbConfig.use_env_variable], {
+    dialect: dbConfig.dialect,
+    dialectOptions: dbConfig.dialectOptions,
+  });
+} else {
+  sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+      dialect: dbConfig.dialect,
+      dialectOptions: dbConfig.dialectOptions,
+    }
+  );
+}
 
 module.exports = sequelize;
