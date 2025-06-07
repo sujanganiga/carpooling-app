@@ -35,7 +35,7 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.4.17"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "https://carpoolingapp.onrender.com",
   "browserslist": {
     "production": [
       ">0.2%",

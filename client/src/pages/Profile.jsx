@@ -91,7 +91,7 @@ const Profile = () => {
       });
       setPreview(
         user.profilePhoto
-          ? `http://localhost:5000${user.profilePhoto}`
+          ? `${process.env.REACT_APP_API_URL}${user.profilePhoto}`
           : "/default-profile.png"
       );
     }
@@ -219,7 +219,7 @@ const Profile = () => {
 
       if (response.data.user.profilePhoto) {
         setPreview(
-          `http://localhost:5000${
+          `${process.env.REACT_APP_API_URL}${
             response.data.user.profilePhoto
           }?${Date.now()}`
         );
@@ -258,7 +258,7 @@ const Profile = () => {
       });
       setPreview(
         user.profilePhoto
-          ? `http://localhost:5000${user.profilePhoto}`
+          ? `${process.env.REACT_APP_API_URL}${user.profilePhoto}`
           : "/default-profile.png"
       );
     }
@@ -651,7 +651,7 @@ const Profile = () => {
                           whileHover={{ scale: 1.1 }}
                           src={
                             review.reviewer.profilePhoto
-                              ? `http://localhost:5000${review.reviewer.profilePhoto}`
+                              ? `${process.env.REACT_APP_API_URL}${review.reviewer.profilePhoto}`
                               : "/default-profile.png"
                           }
                           alt={review.reviewer.name}

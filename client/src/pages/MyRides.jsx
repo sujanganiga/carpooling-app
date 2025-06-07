@@ -330,11 +330,11 @@ const MyRides = () => {
                                 <img
                                   src={
                                     booking.user?.profilePhoto
-                                      ? `http://localhost:5000${booking.user.profilePhoto}`
+                                      ? `${process.env.REACT_APP_API_URL}${booking.user.profilePhoto}`
                                       : "/default-profile.png"
                                   }
                                   alt={booking.user?.name}
-                                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-blue-300 dark:border-blue-500"
                                   onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = "/default-profile.png";
@@ -461,7 +461,7 @@ const MyRides = () => {
                           <img
                             src={
                               booking.ride?.driver?.profilePhoto
-                                ? `http://localhost:5000${booking.ride.driver.profilePhoto}`
+                                ? `${process.env.REACT_APP_API_URL}${booking.ride.driver.profilePhoto}`
                                 : "/default-profile.png"
                             }
                             alt={booking.ride?.driver?.name}
