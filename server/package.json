@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "migrate": "sequelize db:migrate"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,11 +19,15 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^2.0.0",
+    "nodemailer": "^7.0.3",
     "path-to-regexp": "^6.2.1",
     "pg": "^8.11.3",
     "sequelize": "^6.32.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

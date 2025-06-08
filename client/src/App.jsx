@@ -1,13 +1,15 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import i18n from "./i18n/i18n";
 
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
+import DriftLoading from "./components/DriftLoading";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,6 +18,11 @@ import Profile from "./pages/Profile";
 import FindRide from "./pages/FindRide";
 import OfferRide from "./pages/OfferRide";
 import MyRides from "./pages/MyRides";
+import Home from "./pages/Home";
+import HelpCenter from "./pages/HelpCenter";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Terms from "./pages/Terms";
 
 // New DriverRoute component
 const DriverRoute = ({ children }) => {
@@ -44,63 +51,84 @@ function App() {
     <I18nextProvider i18n={i18n}>
       <AuthProvider>
         <LanguageProvider>
-          <ErrorBoundary>
-            <Router>
-              <Layout>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
+          <ThemeProvider>
+            <ErrorBoundary>
+              <Router>
+                <Layout>
+                  <Suspense fallback={<DriftLoading />}>
+                    <Routes>
+                      {/* Public routes */}
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/help" element={<HelpCenter />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/terms" element={<Terms />} />
 
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
+                      {/* Protected routes */}
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Suspense fallback={<DriftLoading />}>
+                              <Dashboard />
+                            </Suspense>
+                          </ProtectedRoute>
+                        }
+                      />
 
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    }
-                  />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <Suspense fallback={<DriftLoading />}>
+                              <Profile />
+                            </Suspense>
+                          </ProtectedRoute>
+                        }
+                      />
 
-                  <Route
-                    path="/find-ride"
-                    element={
-                      <ProtectedRoute>
-                        <FindRide />
-                      </ProtectedRoute>
-                    }
-                  />
+                      <Route
+                        path="/find-ride"
+                        element={
+                          <ProtectedRoute>
+                            <Suspense fallback={<DriftLoading />}>
+                              <FindRide />
+                            </Suspense>
+                          </ProtectedRoute>
+                        }
+                      />
 
-                  <Route
-                    path="/offer-ride"
-                    element={
-                      <ProtectedRoute>
-                        <DriverRoute>
-                          <OfferRide />
-                        </DriverRoute>
-                      </ProtectedRoute>
-                    }
-                  />
+                      <Route
+                        path="/offer-ride"
+                        element={
+                          <ProtectedRoute>
+                            <DriverRoute>
+                              <Suspense fallback={<DriftLoading />}>
+                                <OfferRide />
+                              </Suspense>
+                            </DriverRoute>
+                          </ProtectedRoute>
+                        }
+                      />
 
-                  <Route
-                    path="/my-rides"
-                    element={
-                      <ProtectedRoute>
-                        <MyRides />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-              </Layout>
-            </Router>
-          </ErrorBoundary>
+                      <Route
+                        path="/my-rides"
+                        element={
+                          <ProtectedRoute>
+                            <Suspense fallback={<DriftLoading />}>
+                              <MyRides />
+                            </Suspense>
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                  </Suspense>
+                </Layout>
+              </Router>
+            </ErrorBoundary>
+          </ThemeProvider>
         </LanguageProvider>
       </AuthProvider>
     </I18nextProvider>
