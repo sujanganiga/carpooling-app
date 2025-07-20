@@ -8,7 +8,7 @@ const DriftLoading = ({ variant = "overlay" }) => {
   useEffect(() => {
     try {
       const driftSound = new Audio("/drift-sound.mp3");
-      driftSound.volume = 0.3;
+      driftSound.volume = 0.4;
       driftSound.addEventListener("error", () => {
         setSoundError(true);
       });
