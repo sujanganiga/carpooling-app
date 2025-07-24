@@ -9,8 +9,8 @@ A full-stack carpooling platform that connects passengers with drivers in a secu
 > ⚠️ The backend is hosted on **Render's free tier**, which may take up to **50 seconds to wake up** after inactivity.
 
 - 🔸 **Frontend (React.js + Tailwind)**: [https://carpoolingapp-iota.vercel.app](https://carpoolingapp-iota.vercel.app)
-- 🔸 **Backend (Express.js API)**: [https://carpoolingapp.onrender.com](https://carpoolingapp.onrender.com)
-- 🔸 **Health Check**: [https://carpoolingapp.onrender.com/api/health](https://carpoolingapp.onrender.com/api/health)
+- 🔸 **Backend (Express.js API)**: [https://carpoolingapp.onrender.com](https://carpooling-app-1.onrender.com)
+- 🔸 **Health Check**: [https://carpoolingapp.onrender.com/api/health](https://carpooling-app-1.onrender.com/api/health)
 
 ---
 
